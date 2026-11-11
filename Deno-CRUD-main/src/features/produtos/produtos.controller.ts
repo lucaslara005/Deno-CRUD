@@ -1,0 +1,83 @@
+import { Request, Response } from "express";
+import responser from "responser";
+import throwlhos from "throwlhos";
+import { CriarProdutoComLogService } from "./produtos.service.ts";
+import { ProdutoRepository } from "./produtos.repository.ts";
+import { CustomRequest } from "../../middlewares/auth.middleware.ts";
+
+export class ProdutoController {
+  constructor(
+    private criarProdutoService: CriarProdutoComLogService = new CriarProdutoComLogService(),
+    private produtoRepo: ProdutoRepository = new ProdutoRepository()
+  ) {}
+
+  public criar = async (req: Request, res: Response): Promise<void> => { //criar tem Service pq apresenta regra de negocio mais elaborada
+    try {
+      const customReq = req as CustomRequest;
+      const novoProduto = await this.criarProdutoService.execute(req.body);
+
+      responser.send_created(res, {
+        message: "Produto criado com sucesso!",
+        data: novoProduto,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message.startsWith("Dados inválidos")) {
+        throw throwlhos.err_badRequest(error.message);
+      }
+      if (error instanceof Error && error.message.includes("já existe")) {
+        throw throwlhos.err_conflict(error.message);
+      }
+      throw error;
+    }
+  };
+
+  public listar = async (_req: Request, res: Response): Promise<void> => {
+    const produtos = await this.produtoRepo.find({});
+    responser.send_ok(res, {
+      message: "Produtos listados com sucesso.",
+      data: produtos,
+    });
+  };
+
+  public buscarPorId = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const produto = await this.produtoRepo.findById(id);
+
+    if (!produto) {
+      throw throwlhos.err_not_found("Produto não encontrado.");
+    }
+
+    responser.send_ok(res, {
+      message: "Produto localizado com sucesso.",
+      data: produto,
+    });
+  };
+
+  public atualizar = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const produtoAtualizado = await this.produtoRepo.updateById(id, req.body);
+
+    if (!produtoAtualizado) {
+      throw throwlhos.err_not_found("Produto não encontrado para atualização.");
+    }
+
+    responser.send_ok(res, {
+      message: "Produto atualizado com sucesso.",
+      data: produtoAtualizado,
+    });
+  };
+
+  public deletar = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const produtoDeletado = await this.produtoRepo.deleteById(id);
+
+    if (!produtoDeletado) {
+      throw throwlhos.err_not_found("Produto não encontrado para remoção.");
+    }
+
+    responser.send_ok(res, {
+      message: "Produto removido com sucesso.",
+      data: produtoDeletado,
+    });
+  };
+}

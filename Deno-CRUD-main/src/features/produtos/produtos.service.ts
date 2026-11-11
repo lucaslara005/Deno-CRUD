@@ -7,7 +7,7 @@ export class CriarProdutoComLogService {
     constructor(private produtoRepo: ProdutoRepository = new ProdutoRepository(), private logRepo: LogMovimentacaoRepository = new LogMovimentacaoRepository()
   ) {}
 
-  public async execute(data: IProduto) {
+  public async execute(data: IProduto, context: object = {}) {
     const validationError = ProdutoValidator.validateCreate(data);
     if (validationError) {
       throw new Error(`Dados inválidos: ${validationError}`);
