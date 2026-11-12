@@ -22,7 +22,8 @@ const controller = new ProdutoController();
  *       409:
  *         description: SKU duplicado
  */
-router.post("/", authMiddleware, controller.criar);
+//precisa do login primeiro
+router.post("/", authMiddleware, controller.criar); //Essas linhas são as definições dos endpoints (rotas) da entidade Produto no Express. Elas funcionam como o mapa de entrada da API, conectando uma requisição HTTP externa (vinda do Postman) à função TypeScript correspondente dentro da sua aplicação
 
 /**
  * @openapi

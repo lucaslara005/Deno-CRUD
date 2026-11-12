@@ -7,10 +7,10 @@ export class CriarProdutoComLogService {
     constructor(private produtoRepo: ProdutoRepository = new ProdutoRepository(), private logRepo: LogMovimentacaoRepository = new LogMovimentacaoRepository()
   ) {}
 
-  public async execute(data: IProduto, context: object = {}) {
+  public async execute(data: IProduto) {
     const validationError = ProdutoValidator.validateCreate(data);
     if (validationError) {
-      throw new Error(`Dados inválidos: ${validationError}`);
+      throw new Error("Dados inválidos");
     }
 
     const skuExistente = await this.produtoRepo.findBySku(data.sku);

@@ -11,7 +11,7 @@ export class ProdutoController {
     private produtoRepo: ProdutoRepository = new ProdutoRepository()
   ) {}
 
-  public criar = async (req: Request, res: Response): Promise<void> => { //criar tem Service pq apresenta regra de negocio mais elaborada
+  public criar = async (req: Request, res: Response): Promise<void> => { //"criar" tem Service pq apresenta regra de negocio mais elaborada
     try {
       const customReq = req as CustomRequest;
       const novoProduto = await this.criarProdutoService.execute(req.body);
@@ -31,7 +31,7 @@ export class ProdutoController {
     }
   };
 
-  public listar = async (_req: Request, res: Response): Promise<void> => {
+  public listar = async (_req: Request, res: Response): Promise<void> => {  //vai direto no repositorio
     const produtos = await this.produtoRepo.find({});
     responser.send_ok(res, {
       message: "Produtos listados com sucesso.",
@@ -40,7 +40,7 @@ export class ProdutoController {
   };
 
   public buscarPorId = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
+    const id  = req.params.id;
     const produto = await this.produtoRepo.findById(id);
 
     if (!produto) {
@@ -54,7 +54,7 @@ export class ProdutoController {
   };
 
   public atualizar = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
+    const id = req.params.id;
     const produtoAtualizado = await this.produtoRepo.updateById(id, req.body);
 
     if (!produtoAtualizado) {
@@ -68,7 +68,7 @@ export class ProdutoController {
   };
 
   public deletar = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
+    const id = req.params.id;
     const produtoDeletado = await this.produtoRepo.deleteById(id);
 
     if (!produtoDeletado) {
