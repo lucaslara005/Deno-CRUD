@@ -14,12 +14,12 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    throw throwlhos.err_unauthorized("Token de acesso não fornecido.");
+    throw throwlhos.default.err_unauthorized("Token de acesso não fornecido.");
   }
 
   const parts = authHeader.split(" ");
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    throw throwlhos.err_unauthorized("Formato do token inválido. Utilize 'Bearer <token>'.");
+    throw throwlhos.default.err_unauthorized("Formato do token inválido. Utilize 'Bearer <token>'.");
   }
 
   const token = parts[1];
@@ -29,7 +29,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
     const decoded = jwt.verify(token, secret) as CustomRequest["user"];
     (req as CustomRequest).user = decoded; // req como uma interface que possui o campo user para armazenar os dados do token em req.user
     next();
-  } catch (error) {
-    throw throwlhos.err_unauthorized("Token inválido ou expirado.");
+  } catch {
+      throw throwlhos.default.err_unauthorized("Codigo inválido ou expirado.");
+    return;
   }
 };

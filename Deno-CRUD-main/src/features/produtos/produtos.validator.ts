@@ -1,21 +1,43 @@
-import RequestCheckImport from "request-check";
+import requestCheck from "request-check";
 import { IProduto } from "./produtos.interface.ts";
-const RequestCheck = RequestCheckImport as any; //para que o compilador do typescript aceite RequestCheck como uma classe
 
 export class ProdutoValidator {
   public static validateCreate(data: Partial<IProduto>): string | null {
-    const rc =  new RequestCheck();
+    const rc = requestCheck.default();
+    
+    rc.addRule("nome", {
+      validator: (value: unknown) => typeof value === "string" && value.trim().length > 0,
+      message: "O nome do produto é obrigatório.",
+    });
+    rc.addRule("sku", {
+      validator: (value: unknown) => typeof value === "string" && value.trim().length > 0,
+      message: "O SKU é obrigatório.",
+    });
+    rc.addRule("categoria", {
+      validator: (value: unknown) => typeof value === "string" && value.trim().length > 0,
+      message: "A categoria é obrigatória.",
+    });
+    rc.addRule("preco", {
+      validator: (value: unknown) => typeof value === "number" && Number.isFinite(value),
+      message: "O preço deve ser numérico.",
+    });
+    rc.addRule("estoque", {
+      validator: (value: unknown) => typeof value === "number" && Number.isFinite(value),
+      message: "O estoque deve ser numérico.",
+    });
 
-    rc.required(["nome", "preco", "sku", "categoria"], data);
-    rc.isString(["nome", "sku", "categoria"], data);
-    rc.isNumber(["preco"], data);
+    const errors = rc.check(
+      { nome: data.nome },
+      { preco: data.preco },
+      { sku: data.sku },
+      { categoria: data.categoria },
+      { estoque: data.estoque, isRequiredField: false },
+    ) as { message: string }[] | undefined;
 
-    if (data.estoque !== undefined && data.estoque !== null) {
-      rc.isNumber(["estoque"], data);
-    }
-
-    if (rc.check()) {
-      return rc.check();
+    if (errors?.length) {
+      return errors
+        .map((error: { message: string }) => error.message)
+        .join(" ");
     }
 
     if (typeof data.preco === "number" && data.preco < 0) {

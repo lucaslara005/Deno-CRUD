@@ -1,4 +1,4 @@
-import bcrypt from "npm:bcrypt@^5.1.1";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import throwlhos from "throwlhos";
 import { UsuarioRepository } from "../usuarios/usuarios.repository.ts";
@@ -10,19 +10,17 @@ export class AuthService {
 
   public async login(email?: string, password?: string) {
     if (!email || !password) {
-      throw throwlhos.err_bad_request("E-mail e senha são obrigatórios.", {
-        email,
-      });
+      throw throwlhos.default.err_badRequest("E-mail e senha são obrigatórios.");
     }
 
     const usuario = await this.usuarioRepo.findByEmail(email);
     if (!usuario) {
-      throw throwlhos.err_bad_request("E-mail ou senha inválidos.", { email });
+      throw throwlhos.default.err_badRequest("E-mail ou senha inválidos.");
     }
 
     const senhaValida = await bcrypt.compare(password, usuario.senha);  //bcrypt.compare nao descriptogrrafa e sim transforma a senha informada no login no mesmo padrao da criptgrafia da senha gravda no banco de dados
     if (!senhaValida) {
-      throw throwlhos.err_bad_request("E-mail ou senha inválidos.", { email });
+      throw throwlhos.default.err_badRequest("E-mail ou senha inválidos.");
     }
 
     const secret = Deno.env.get("JWT_SECRET") || "secret_key_padrao"; //chave usada para assinar o token

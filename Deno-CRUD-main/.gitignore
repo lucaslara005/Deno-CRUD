@@ -1,1 +1,2 @@
 //impede que o git adicione os arquivos aqui citados aos meus commits.
+.env

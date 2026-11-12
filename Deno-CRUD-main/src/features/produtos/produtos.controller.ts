@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import responser from "responser";
+import "responser";
 import throwlhos from "throwlhos";
 import { CriarProdutoComLogService } from "./produtos.service.ts";
 import { ProdutoRepository } from "./produtos.repository.ts";
-import { CustomRequest } from "../../middlewares/auth.middleware.ts";
+
 
 export class ProdutoController {
   constructor(
@@ -13,13 +13,9 @@ export class ProdutoController {
 
   public criar = async (req: Request, res: Response): Promise<void> => { //"criar" tem Service pq apresenta regra de negocio mais elaborada
     try {
-      const customReq = req as CustomRequest;
       const novoProduto = await this.criarProdutoService.execute(req.body);
 
-      responser.send_created(res, {
-        message: "Produto criado com sucesso!",
-        data: novoProduto,
-      });
+      res.send_created("Produto criado com sucesso!", { data: novoProduto });
     } catch (error) {
       if (error instanceof Error && error.message.startsWith("Dados inválidos")) {
         throw throwlhos.err_badRequest(error.message);
@@ -32,23 +28,25 @@ export class ProdutoController {
   };
 
   public listar = async (_req: Request, res: Response): Promise<void> => {  //vai direto no repositorio
-    const produtos = await this.produtoRepo.find({});
-    responser.send_ok(res, {
-      message: "Produtos listados com sucesso.",
-      data: produtos,
-    });
+    try{
+      const produtos = await this.produtoRepo.find({});
+    res.send_ok("Produtos listados com sucesso.", {data: produtos,});
+    } catch(error) {
+        throw throwlhos.err_internalServerError("Falha ao consultar produtos no banco");
+    }
   };
+  
 
   public buscarPorId = async (req: Request, res: Response): Promise<void> => {
     const id  = req.params.id;
     const produto = await this.produtoRepo.findById(id);
 
     if (!produto) {
-      throw throwlhos.err_not_found("Produto não encontrado.");
+      throw throwlhos.err_notFound("Produto não encontrado.");
     }
 
-    responser.send_ok(res, {
-      message: "Produto localizado com sucesso.",
+    res.send_ok("Produto localizado com sucesso.", {
+      
       data: produto,
     });
   };
@@ -58,11 +56,11 @@ export class ProdutoController {
     const produtoAtualizado = await this.produtoRepo.updateById(id, req.body);
 
     if (!produtoAtualizado) {
-      throw throwlhos.err_not_found("Produto não encontrado para atualização.");
+      throw res.err_notFound("Produto não encontrado para atualização.");
     }
 
-    responser.send_ok(res, {
-      message: "Produto atualizado com sucesso.",
+    res.send_ok("Produto atualizado com sucesso.", {
+      
       data: produtoAtualizado,
     });
   };
@@ -72,12 +70,9 @@ export class ProdutoController {
     const produtoDeletado = await this.produtoRepo.deleteById(id);
 
     if (!produtoDeletado) {
-      throw throwlhos.err_not_found("Produto não encontrado para remoção.");
+      throw throwlhos.err_notFound("Produto não encontrado para remoção.");
     }
 
-    responser.send_ok(res, {
-      message: "Produto removido com sucesso.",
-      data: produtoDeletado,
-    });
+    res.send_ok("Produto removido com sucesso.", {data: produtoDeletado});
   };
 }
