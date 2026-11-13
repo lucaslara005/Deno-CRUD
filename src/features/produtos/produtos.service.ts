@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { IProduto } from "./produtos.interface.ts";
 import { ProdutoRepository, LogMovimentacaoRepository } from "./produtos.repository.ts";
 import { ProdutoValidator } from "./produtos.validator.ts";
-
+                                                                              
 export class CriarProdutoComLogService {
     constructor(private produtoRepo: ProdutoRepository = new ProdutoRepository(), private logRepo: LogMovimentacaoRepository = new LogMovimentacaoRepository(), 
     private startSession: () => Promise<mongoose.ClientSession> = () => mongoose.startSession()
@@ -10,21 +10,21 @@ export class CriarProdutoComLogService {
   ) {}
 
   public async execute(data: IProduto) {
-    //Primeira verificacao
+    
     const validationError = ProdutoValidator.validateCreate(data);
     if (validationError) {
       throw new Error("Dados inválidos");
     }
-    
+
     //segunda verificacao
     const skuExistente = await this.produtoRepo.findBySku(data.sku);
     if (skuExistente) {
       throw new Error(`Já existe um produto registado com o SKU: ${data.sku.toUpperCase()}`);
     }
-
+  
     const session = await this.startSession(); //para que seja possivel usar a sessao
     session.startTransaction();
-
+  
     try {
       const [novoProduto] = await this.produtoRepo.create(
         [

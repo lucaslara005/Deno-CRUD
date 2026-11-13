@@ -10,17 +10,17 @@ export class AuthService {
 
   public async login(email?: string, password?: string) {
     if (!email || !password) {
-      throw throwlhos.default.err_badRequest("E-mail e senha são obrigatórios.");
+      throw throwlhos.err_badRequest("E-mail e senha são obrigatórios.");
     }
 
     const usuario = await this.usuarioRepo.findByEmail(email);
     if (!usuario) {
-      throw throwlhos.default.err_badRequest("E-mail ou senha inválidos.");
+      throw throwlhos.err_badRequest("E-mail ou senha inválidos.");
     }
 
     const senhaValida = await bcrypt.compare(password, usuario.senha);  //bcrypt.compare nao descriptogrrafa e sim transforma a senha informada no login no mesmo padrao da criptgrafia da senha gravda no banco de dados
     if (!senhaValida) {
-      throw throwlhos.default.err_badRequest("E-mail ou senha inválidos.");
+      throw throwlhos.err_badRequest("E-mail ou senha inválidos.");
     }
 
     const secret = Deno.env.get("JWT_SECRET") || "secret_key_padrao"; //chave usada para assinar o token

@@ -3,20 +3,23 @@ import { IProduto } from "./produtos.interface.ts";
 
 export class ProdutoValidator {
   public static validateCreate(data: Partial<IProduto>): string | null {
-    const rc = requestCheck.default();
+    const rc = requestCheck.default();    
     
     rc.addRule("nome", {
       validator: (value: unknown) => typeof value === "string" && value.trim().length > 0,
       message: "O nome do produto é obrigatório.",
     });
+
     rc.addRule("sku", {
       validator: (value: unknown) => typeof value === "string" && value.trim().length > 0,
       message: "O SKU é obrigatório.",
     });
+
     rc.addRule("categoria", {
       validator: (value: unknown) => typeof value === "string" && value.trim().length > 0,
       message: "A categoria é obrigatória.",
     });
+
     rc.addRule("preco", {
       validator: (value: unknown) => typeof value === "number" && Number.isFinite(value),
       message: "O preço deve ser numérico.",

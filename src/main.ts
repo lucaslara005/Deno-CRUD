@@ -31,6 +31,7 @@ app.use((
   res: Response,
   _next: NextFunction,
 ) => {
+  
   const code = Number.isInteger(err?.code) && err.code! >= 400 && err.code! <= 599
     ? err.code!
     : 500; // erros que não são do throwlhos viram 500

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import throwlhos from "throwlhos";
+import { throwlhos } from "../config/throwlhos.ts"
 
 export interface CustomRequest extends Request { //payload do token
   user?: {
@@ -14,12 +14,12 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
   const authHeader = req.headers.authorization;   //Authorization: Bearer <token>
 
   if (!authHeader) {
-    throw throwlhos.default.err_unauthorized("Token de acesso não fornecido.");
+    throw throwlhos.err_unauthorized("Token de acesso não fornecido.");
   }
 
   const parts = authHeader.split(" ");
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    throw throwlhos.default.err_unauthorized("Formato do token inválido. Utilize 'Bearer <token>'.");
+    throw throwlhos.err_unauthorized("Formato do token inválido. Utilize 'Bearer <token>'.");
   }
 
   const token = parts[1];
@@ -30,7 +30,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
     (req as CustomRequest).user = decoded; // req como uma interface que possui o campo user para armazenar os dados do token em req.user
     next();
   } catch {
-      throw throwlhos.default.err_unauthorized("Codigo inválido ou expirado.");
+      throw throwlhos.err_unauthorized("Codigo inválido ou expirado.");
     return;
   }
 };
