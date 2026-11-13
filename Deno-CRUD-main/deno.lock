@@ -2,10 +2,13 @@
   "version": "5",
   "specifiers": {
     "jsr:@std/assert@^1.0.19": "1.0.19",
+    "jsr:@std/dotenv@0.201.0": "0.201.0",
     "jsr:@std/internal@^1.0.12": "1.0.14",
+    "jsr:@zarco/isness@~0.1.18": "0.1.18",
     "npm:assert@^2.1.0": "2.1.0",
     "npm:bcrypt@6": "6.0.0",
     "npm:bcrypt@^5.1.1": "5.1.1",
+    "npm:bcryptjs@*": "3.0.3",
     "npm:cors@^2.8.6": "2.8.6",
     "npm:dayjs@^1.11.21": "1.11.23",
     "npm:dotenv@^17.4.2": "17.4.2",
@@ -27,8 +30,14 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/dotenv@0.201.0": {
+      "integrity": "fda96be219c565fa5b2017102df36809cab7d5ac5cfe3f736ae20b565f744b1c"
+    },
     "@std/internal@1.0.14": {
       "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@zarco/isness@0.1.18": {
+      "integrity": "a46146d9fabe67d0a273ed3d938788dc9e3bcf6c6f8e8a0dd380d9e431a74343"
     }
   },
   "npm": {
@@ -132,6 +141,10 @@
         "node-gyp-build"
       ],
       "scripts": true
+    },
+    "bcryptjs@3.0.3": {
+      "integrity": "sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==",
+      "bin": true
     },
     "bindings@1.5.0": {
       "integrity": "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==",

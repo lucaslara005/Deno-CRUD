@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import "responser";
-import throwlhos from "throwlhos";
+import { throwlhos } from "../../config/throwlhos.ts";
 import { CriarProdutoComLogService } from "./produtos.service.ts";
 import { ProdutoRepository } from "./produtos.repository.ts";
 
@@ -15,24 +15,24 @@ export class ProdutoController {
     try {
       const novoProduto = await this.criarProdutoService.execute(req.body);
 
-      res.send_created("Produto criado com sucesso!", { data: novoProduto });
+      res.status(201).json({ code: 201, message: "Produto criado com sucesso!", data: novoProduto });
     } catch (error) {
       if (error instanceof Error && error.message.startsWith("Dados inválidos")) {
-        throw throwlhos.err_badRequest(error.message);
+        throw throwlhos.err_badRequest(error.message, {body: req.body});
       }
       if (error instanceof Error && error.message.includes("já existe")) {
-        throw throwlhos.err_conflict(error.message);
+        throw throwlhos.err_conflict(error.message, {sku: req.body.sku});
       }
       throw error;
     }
   };
 
-  public listar = async (_req: Request, res: Response): Promise<void> => {  //vai direto no repositorio
+  public listar = async (req: Request, res: Response): Promise<void> => {  //vai direto no repositorio
     try{
       const produtos = await this.produtoRepo.find({});
-    res.send_ok("Produtos listados com sucesso.", {data: produtos,});
+    res.status(200).json({ code: 200, message: "Produtos listados com sucesso.", data: produtos });
     } catch(error) {
-        throw throwlhos.err_internalServerError("Falha ao consultar produtos no banco");
+        throw throwlhos.err_internalServerError("Falha ao consultar produtos no banco!", {path: req.originalUrl, error: error instanceof Error ? error.message : error});
     }
   };
   
@@ -42,11 +42,12 @@ export class ProdutoController {
     const produto = await this.produtoRepo.findById(id);
 
     if (!produto) {
-      throw throwlhos.err_notFound("Produto não encontrado.");
+      throw throwlhos.err_notFound("Produto não encontrado.", {id: id});
     }
 
-    res.send_ok("Produto localizado com sucesso.", {
-      
+    res.status(200).json({
+      code: 200,
+      message: "Produto localizado com sucesso.",
       data: produto,
     });
   };
@@ -56,11 +57,12 @@ export class ProdutoController {
     const produtoAtualizado = await this.produtoRepo.updateById(id, req.body);
 
     if (!produtoAtualizado) {
-      throw res.err_notFound("Produto não encontrado para atualização.");
+      throw throwlhos.err_notFound("Produto não encontrado para atualização.", {id: id});
     }
 
-    res.send_ok("Produto atualizado com sucesso.", {
-      
+    res.status(200).json({
+      code: 200,
+      message: "Produto atualizado com sucesso.",
       data: produtoAtualizado,
     });
   };
@@ -70,9 +72,9 @@ export class ProdutoController {
     const produtoDeletado = await this.produtoRepo.deleteById(id);
 
     if (!produtoDeletado) {
-      throw throwlhos.err_notFound("Produto não encontrado para remoção.");
+      throw throwlhos.err_notFound("Produto não encontrado para remoção.", {ID: id});
     }
 
-    res.send_ok("Produto removido com sucesso.", {data: produtoDeletado});
+    res.status(200).json({ code: 200, message: "Produto removido com sucesso.", data: produtoDeletado });
   };
 }

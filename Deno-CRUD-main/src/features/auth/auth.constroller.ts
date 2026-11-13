@@ -12,7 +12,9 @@ export class AuthController {
 
     const resultado = await this.authService.login(email, password);
 
-    res.send_ok("Login realizado com sucesso.", {
+    res.status(200).json({
+      code: 200,
+      message: "Login realizado com sucesso.",
       data: resultado,
     });
   };

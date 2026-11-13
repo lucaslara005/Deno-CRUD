@@ -51,17 +51,23 @@ Deno.test("ProdutoController - Deve listar produtos com status 200", async () =>
 Deno.test("ProdutoController - Deve responder 500 quando listar falhar no repositório", async () => {
   const fakeService = {} as CriarProdutoComLogService;
   const fakeRepo = {
-    find: () => Promise.reject(new Error("Falha ao consultar produtos no banco")),  //simular uma queda de conexao
+    find: () => Promise.reject(new Error("Falha ao consultar produtos no banco!")),  //simular uma queda de conexao
   } as unknown as ProdutoRepository;
 
   const controller = new ProdutoController(fakeService, fakeRepo);
   const req = {} as Request;
   const res = criarMockResponse();
 
-  await controller.listar(req, res);
+  let error: {code?: number} = {};
 
-  assertEquals(res.statusCode, 500);
-  assertEquals(res.payload.code, 500);
+  try{
+    await controller.listar(req, res);
+  } catch(err) {
+      error = err as {code?:number};
+    }
+
+  assertEquals(error.code, 500);
+  
 });
 
 Deno.test("ProdutoController - Deve retornar status 200 ao buscar produto existente por ID", async () => { // /:id
@@ -98,8 +104,12 @@ Deno.test("ProdutoController - Deve responder 404 se produto não existir", asyn
   const req = { params: { id: "id_inexistente" } } as unknown as Request;
   const res = criarMockResponse();
 
-  await controller.buscarPorId(req, res);
+  let error: {code?: number} = {};
 
-  assertEquals(res.statusCode, 404);
-  assertEquals(res.payload.code, 404);
+  try{
+    await controller.buscarPorId(req, res);
+  } catch(err) {
+      error = err as {code?:number};
+    }
+    assertEquals(error.code, 404);
 });
