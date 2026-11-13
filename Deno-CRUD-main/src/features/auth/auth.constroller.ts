@@ -8,8 +8,9 @@ export class AuthController {
   ) {}
 
   public login = async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body || {};
-
+    const email = req.body.email || {};
+    const password = req.body.password || {};
+    
     const resultado = await this.authService.login(email, password);
 
     res.status(200).json({

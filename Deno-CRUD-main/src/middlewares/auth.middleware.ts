@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import throwlhos from "throwlhos";
 
-export interface CustomRequest extends Request {
+export interface CustomRequest extends Request { //payload do token
   user?: {
     id: string;
     email: string;
@@ -11,7 +11,7 @@ export interface CustomRequest extends Request {
 }
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization;   //Authorization: Bearer <token>
 
   if (!authHeader) {
     throw throwlhos.default.err_unauthorized("Token de acesso não fornecido.");

@@ -6,6 +6,7 @@
     "jsr:@std/internal@^1.0.12": "1.0.14",
     "jsr:@zarco/isness@~0.1.18": "0.1.18",
     "npm:assert@^2.1.0": "2.1.0",
+    "npm:bcrypt@*": "6.0.0",
     "npm:bcrypt@6": "6.0.0",
     "npm:bcrypt@^5.1.1": "5.1.1",
     "npm:bcryptjs@*": "3.0.3",
