@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import throwlhos from "throwlhos";
+import { throwlhos } from "../../config/throwlhos.ts";
 import { UsuarioRepository } from "../usuarios/usuarios.repository.ts";
 
 export class AuthService {
