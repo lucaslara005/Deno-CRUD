@@ -109,29 +109,21 @@ O servidor sobe em `http://localhost:3000`.
 
 ### Criar um usuário
 
-A API não possui rota de cadastro de usuários, então o primeiro usuário é inserido direto no MongoDB, com a senha já criptografada em bcrypt. (deno eval "import bcrypt from 'npm:bcrypt'; console.log(await bcrypt.hash('123456', 10));")
+A API não possui rota de cadastro de usuários, então o primeiro usuário é inserido direto no MongoDB, com a senha já criptografada em bcrypt.
 
-db.usuarios.insertOne({
-  nome: "Lucas",
-  email: "lucas@agx.com",
-  senha: "$2b$10$CXm8VupGYLsmMeonyGSd6Oc2jSxFoiAdOSbEdWg7UTJuHyN1NKfRK",
-  role: "admin",
-  createdAt: new Date(),
-  updatedAt: new Date()
-})
 
 1. Gere o hash da senha:
 
 ```
-deno eval "import bcrypt from 'npm:bcryptjs'; console.log(await bcrypt.hash('sua-senha', 10))"
+deno eval "import bcrypt from 'npm:bcryptjs'; console.log(await bcrypt.hash('123456', 10))"
 ```
 
 2. Insira o usuário no `mongosh`:
 
 db.usuarios.insertOne({
-  nome: "Seu Nome",
-  email: "usuario@exemplo.com",
-  senha: "<hash gerado>",
+  nome: "Lucas",
+  email: "lucas@agx.com",
+  senha: "$2b$10$CXm8VupGYLsmMeonyGSd6Oc2jSxFoiAdOSbEdWg7UTJuHyN1NKfRK",
   role: "admin"
 })
 
